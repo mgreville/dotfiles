@@ -1,0 +1,232 @@
+# Loc:${HOME}/.bashrc
+
+# .bashrc
+# MLG's environment
+# Last edit 09/01/2018
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# User specific aliases and functions
+
+echo "Sourcing ~.bashrc" 1>&2
+
+# Host specific rc file defintions used mainly for things like PATH details
+if [[ -f ~/.$(hostname -s).rc ]]; then
+    echo "Sourcing host specific rc file ~/.$(hostname -s).rc" 1>&2
+  . ~/.$(hostname -s).rc
+else
+    echo "No host specific rc file found" 1>&2
+fi
+
+# Show us how many open vim editor sessions there are
+echo -e "Open vi sessions:\n`ps -ef | grep vim | grep -v grep`" 1>&2
+
+# Setting TERM shouldn't be done in the rc files I now am aware
+# However when using screen TERM=screen
+export TERM=xterm-256color
+
+[[ ${TERM} =~ 'xterm' ]] && unset SSH_ASKPASS
+[[ -f .colours ]] && . .colours
+[[ "$(uname)" == "Darwin" ]] && Mac="true"
+
+# Shell options
+shopt -s histappend cdspell histverify nocaseglob dotglob
+#shopt -s failglob # Setting this shopt option breaks something in the PS1 prompt
+set -o noclobber
+stty -ixon
+IGNOREEOF=2
+
+# AWS
+complete -C '/bin/aws_completer' aws
+
+# Aliases
+alias bc='bc -ql'
+alias cb='popd'
+alias c='clear'
+alias cd='pushd'
+# def <word> goes to Mirriam Webster page of it definition
+alias def='lynx "http://www.m-w.com/cgi-bin/dictionary?book=Dictionary&va=$*"'
+alias grep='grep --color=auto'
+alias glg="git log --graph --abbrev-commit --decorate --date=relative --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'"
+alias h='history'
+alias i='/sbin/ifconfig'
+alias ll='ls -l --color=always'
+alias l.='ls -d .* --color=always'
+alias lsd='ls -ltr | grep "^d"'
+[[ $Mac ]] && alias ls='ls -FA' || alias ls='ls --color=auto -FA'
+alias make='make --warn-undefined-variables'
+alias rdesktop='rdesktop -u mgreville -g 1024x780'
+alias r='fc -s'
+alias rm='/bin/rm -i'
+alias rsync='rsync -a -P -m -h -h --stats'
+alias sa='/usr/sbin/apachectl graceful'
+alias screen='screen -A -h 9999 -U'
+alias smmg='sendmail mgreville@arcbs.redcross.org.au'
+alias spaix='while [ 1 -gt 0 ]; do for each in \| \\ - \/; do echo " $each" "\r\c"; sleep 1; done; done'
+alias sp='while true; do for each in \| \\ - \/; do echo -en " $each" "\r"; sleep 0.25; done; done'
+alias ssh_add='ssh-add -t 12h'
+alias sshno='ssh -o "PubkeyAuthentication no"'
+alias s='sudo'
+alias s-='sudo su -'
+alias tm='tail -n 50 -f /var/log/messages'
+alias tree='tree -C -st'
+alias x='xterm +mb -vb -bg black -fg green -sl 5000 &'
+alias yul='yum --disablerepo=* --enablerepo=fedora-media'
+alias vif='vi $(find . -path ./.git -prune -o -type f -print)'
+
+# Paths
+export PATH="${HOME}/bin:${HOME}/node-v8.11.3/bin:$PATH:/usr/local/sbin/:/usr/sbin/:/sbin/"
+export CDPATH="$HOME:~/git:~/Documents/projects:/usr/share:/"
+
+# Environment
+#export http_proxy='http://'
+#export https_proxy='http://'
+#export ftp_proxy='http://'
+
+# pdsh remote command type
+export PDSH_RCMD_TYPE=ssh
+
+# Set grep to highlight search term (depracated; use an alias instead)
+#export GREP_OPTIONS='--color=auto'
+
+# Set less environment
+export LESS="-r"
+
+# History
+HISTCONTROL=ignoreboth:erasedups
+HISTFILESIZE=5000
+HISTSIZE=3333
+HISTIGNORE="\&:i:c:f:i:x:df*h:cd*:c-*:"
+export HISTTIMEFORMAT='%F %T '
+
+# Set directory colours to visible
+export LS_COLORS="no=00:fi=00:di=01;36:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:*.cmd=01;32:*.exe=01;32:*.com=01;32:*.btm=01;32:*.bat=01;32:*.sh=01;32:*.csh=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tz=01;31:*.rpm=01;31:*.cpio=01;31:*.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.xbm=01;35:*.xpm=01;35:*.png=01;35:*.tif=01;35:"
+
+# Prompt
+# See man console_codes for terminal escapes
+# See man bash for PS1 fields
+
+# PROMPT_COMMAND
+# The sequence "\033]0;${HOSTNAME}\007" sets the xterm title bar text
+# The echo "$(jobs)" is redundant as the number of fbackground jobs is now captured in the prompt
+# PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}\007"; history -a; history -n; echo "$(jobs)"'
+
+# The Mac terminal doesn't seem to cope with \e] as the escape
+# The problem was that the escape code \e has been removed in mountain lion's version of echo. Change \e to \033 and it will work.
+
+export PROMPT_DIRTRIM='2'
+export PROMPT_COMMAND='echo -ne "\033]0; ${HOSTNAME}:pts/$( basename $( tty )):$( history 1 | cut -d " " -f 1,2,3,4,5 --complement )\0007"; history -a; history -n'
+
+#PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+# The next PROMPT_COMMAND is the same as the above but with the short form of \e
+#PROMPT_COMMAND='echo -ne "\e]0;${USER}@${HOSTNAME}:${PWD}\007"'
+# The next PROMPT_COMMAND is the same again using the CTRL-ESC format for the escape.
+#PROMPT_COMMAND='echo -ne "0;${USER}@${HOSTNAME}: ${PWD}\007"'
+
+# Git prompt
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+GIT_PS1_SHOWCOLORHINTS='1'
+GIT_PS1_DESCRIBE_STYLE="branch"
+GIT_PS1_SHOWUPSTREAM="auto git"
+
+get_sha() {
+    git rev-parse --short HEAD 2>/dev/null
+}
+
+if [ "$UID" -eq "0" ]; then
+
+    PS1='\[\e[1;35m\]\$( stat=\$? ; if [[ \${stat} == 0 ]]; then echo \"\[\033[01;32m\]\${stat}\"; else echo \"\[\033[01;31m\]\${stat}\"; fi)\[\e[1;35m\]:\!:\#\[\e[m\][\t]\n\[\e[m\]\[\e[7;31m\]\u\[\e[m\]@\$(temp=$(tty);echo \${temp:5}):\[\e[7;33m\]\h\[\e[0;32m\]:\w/\[\e[m\]\\$ '
+
+else
+
+    if [[ -x /usr/bin/git ]]; then
+        source ~/.git-prompt.sh
+        source ~/.git-completion.bash
+
+        PS1='\[\e[32m\]\u\[\e[m\]\[\e[1;33m\]@\h\[\e[0;36m\]:\#,\!:\[\e[4;35m\][\t]\[\e[m\]$( stat=$? ; if [[ ${stat} == 0 ]]; then echo "\[\e[01;32m\]rc=${stat}"; else echo "\[\e[41m\]rc=${stat}"; fi)\[\e[m\]$([ \j -gt 0 ] && echo \[\e[31m\][jobs=\j])\[\e[1;35m\]\n\[\e[m\]\[\e[0;91m\]$(temp=$(tty);echo ${temp:5})\[\e[0;94m\]:\w/\[\e[m\]\[\e[1;97m\]$(__git_ps1 "[%s$(get_sha)]")\$\[\e[m\] '
+
+    else
+
+        PS1='\[\e[32m\]\u\[\e[m\]\[\e[1;33m\]@\h\[\e[0;36m\]:\#,\!:\[\e[4;35m\][\t]\[\e[m\]$( stat=$? ; if [[ ${stat} == 0 ]]; then echo "\[\e[01;32m\]rc=${stat}"; else echo "\[\e[41m\]rc=${stat}"; fi)\[\e[m\]$([ \j -gt 0 ] && echo \[\e[31m\][jobs=\j])\[\e[1;35m\]\n\[\e[m\]\[\e[0;91m\]$(temp=$(tty);echo ${temp:5})\[\e[0;94m\]:\w/\[\e[m\]\[\e[1;97m\]\$\[\e[m\] '
+
+    fi
+
+#    PS1="\[\e[1;35m\]\$( stat=\$? ; if [[ \${stat} == 0 ]]; then echo \"\[\033[01;32m\]\${stat}\"; else echo \"\[\033[01;31m\]\${stat}\"; fi)\[\e[1;35m\]:\!:\#\[\e[m\][\t]\n\[\e[m\]\[\e[32m\]\u\[\e[m\]@\$(temp=$(tty);echo \${temp:5}):\[\e[7;33m\]\h\[\e[0;32m\]:\w/\[\e[m\]\\$ "
+
+fi
+
+# The commented out PS1 does not have the protect embedded non-printable \[..\]
+#PS1="\[\e[1;35m\]\!:\#\[\e[m\][\t]\n\[\e[m\]\[\e[32m\]\u\[\e[m\]@\$(temp=$(tty);echo \${temp:5}):\[\e[7;33m\]\h\[\e[0;32m\]:\w/\[\e[m\]\\$ "
+#PS1="\e[0;33m\!\e[m[\t][\u@\h:\e[0;32m\w/\e[m$ "
+
+# These prompt commands set the xterm title; see man console_codes
+# I prefer the current command entered into the xterm bar though which requires PROMPT_COMMAND=''
+
+# Functions
+# Man page to html converter
+man2html () { gunzip -c `man -w $1` | groff -mandoc -T html; }
+export -f man2html
+
+# Command line perl calculator
+calc(){ perl -wlne'print eval'; }
+export -f calc
+
+#cleanhist(){
+#/usr/bin/tac ~/.bash_history | tr -s " " | awk '!seen[$0]++' | /usr/bin/tac >| /tmp/newhist
+#mv -f /tmp/newhist ~/.bash_history
+#}
+#export -f cleanhist
+#cleanhist
+
+# Set ssh-agent environment
+
+# This solution from Joseph M. Reagle by way of Daniel Starin:
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+     echo "Initialising new SSH agent..."
+     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+     echo succeeded 1>&2
+     chmod 600 "${SSH_ENV}"
+     . "${SSH_ENV}" > /dev/null
+     # Load default key ~/.ssh/id_rsa
+     /usr/bin/ssh-add -t 36000
+}
+
+# Source SSH settings, if applicable
+if [ -f "${SSH_ENV}" ]; then
+     . "${SSH_ENV}" > /dev/null
+     #ps ${SSH_AGENT_PID} doesn't work under cywgin
+     ps -ef | grep "${SSH_AGENT_PID}" | grep "ssh-agent" > /dev/null || {
+         /bin/rm ${SSH_ENV}
+         start_agent
+     }
+     . "${SSH_ENV}" > /dev/null
+else
+     start_agent
+fi
+
+# Traps
+# Execute command on exit
+#trap 'echo -e "\e[mTerminal times are";times;read' 0
+#This trap sets the xterm title to the current/last commmand
+#For this to work the functrace option is set
+#
+#Commented out the titlebar set for bash version with no functrace
+##case $TERM in
+ ##   rxvt|*term)
+   ##     set -o functrace
+#This doesn't play nicely with the KDE terminal application.
+#        trap 'echo -ne "\e]0;${HOSTNAME}\t\t$BASH_COMMAND\007" && history -a' DEBUG
+     ##   trap 'history -a' DEBUG
+ ##   ;;
+##esac
+
+return 0
+
+complete -C /home/p712384/bin/terraform terraform

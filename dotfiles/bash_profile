@@ -1,0 +1,29 @@
+# Loc:${HOME}/.bash_profile
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+  . ~/.bashrc
+fi
+
+echo "Sourcing ~.bash_profile" 1>&2
+
+# User specific environment and startup programs
+
+# Ensure vim backup directory is created
+[[ ! -d ~/.vim/backup ]] && mkdir -p ~/.vim/backup
+
+# Launch screen
+if [[ -x /usr/bin/screen ]]; then
+  open_screen_sessions="`/usr/bin/screen -ls | head -n 1`"
+  if [[ ${open_screen_sessions} =~ "No Sockets" ]] ; then
+    echo "No screen sockets open" 1>&2
+    screen -t $(date +%H_%m_%a_%b_%d) -S HOME_INSTANCE
+  else
+    echo "open screen sessions = $(/usr/bin/screen -ls)" 1>&2
+    echo "Use screen -t window_name -S session_name to open a new labelled session or -Dr session_name to reattach" 1>&2
+  fi
+else
+  echo "screen not installed" 1>&2
+fi
+

@@ -1,0 +1,5 @@
+# Loc:${HOME}/.gitconfig
+[core]
+[user]
+	name = Marcus Greville
+	email = marcus.greville@gmail.com

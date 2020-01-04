@@ -1,0 +1,42 @@
+# Loc:${HOME}/.screenrc
+termcapinfo xterm* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+bind R eval "source $HOME/.screenrc" "echo '.screenrc reloaded!'"
+#hardstatus alwayslastline
+hardstatus off
+#hardstatus alwayslastline "%{rk}%H %{gk}%c %{yk}%M%d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+#hardstatus string '%{= kG}%-Lw%{= kW}%50> %n*%f %t%{= kG}%+Lw%< %{= kG}%-=%D %M %d | %C:%s %A %1`%{-}'
+caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f*%t%{-}%+Lw%-0<"
+#caption always "%{rk}%H %{gk}%c %{yk}%M%d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"
+#Setup a decent scroll buffer
+defscrollback 10000
+altscreen on
+chdir
+layout autosave on
+layout attach 4-panel
+#Multi-region movement
+bind j focus down
+bind k focus up
+bind t focus top
+bind b focus bottom
+
+# Onmy current system this binds to Ctrl + Arrow Key. I dont know why
+bindkey "^[[A" focus up
+bindkey "^[[B" focus down
+bindkey "^[[D" focus top
+bindkey "^[[C" focus bottom
+
+# Escape + arrow keys, don't work
+bindkey "^[^^[[A" resize -v +5%
+bindkey "^[^^[[B" resize -v -5%
+bindkey "^[^^[[D" resize -h -5%
+bindkey "^[^^[[C" resize -h +5%
+
+# Mouse support to switch between split screen windows
+# Trying moustrack again. Plays some havoc with cut and paste and strayi ctrl characters
+mousetrack on
+shelltitle "$ |bash"
+
+# Set the below shell option to cause a login and .bash_profile to be parsed
+# Not necessary for my setup
+#shell -${SHELL}
+

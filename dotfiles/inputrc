@@ -1,0 +1,10 @@
+# Loc:${HOME}/.inputrc
+#http://codeinthehole.com/writing/the-most-important-command-line-tip-incremental-history-searching-with-inputrc/
+#History mapping for the arrow keys, while keepingthe left and right.
+#These maaping require explicit mapping of the Home and End keys.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line

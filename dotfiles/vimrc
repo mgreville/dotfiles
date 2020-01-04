@@ -1,0 +1,301 @@
+" Loc:${HOME}/.vimrc
+"Syntastic error -
+"EVL205 missing scriptencoding
+scriptencoding utf-8
+"Caused by => "let g:airline_left_sep          = '⮀'
+" Run in vim compatible mode (newer options and behavior).
+set nocompatible
+"execute pathogen#infect()
+"execute pathogen#helptags()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin('~/.vim/plugins')
+" let Vundle manage Vundle, required
+" GitHub is used when a user/repo is passed to `Plugin`
+Plugin 'gmarik/Vundle.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'kien/ctrlp.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-surround'
+Plugin 'ervandew/supertab'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'bling/vim-bufferline'
+Plugin 'syngan/vim-vimlint'
+Plugin 'ynkdir/vim-vimlparser'
+Plugin 'fholgado/minibufexpl.vim'
+Plugin 'guns/xterm-color-table.vim'
+Plugin 'scrooloose/syntastic'
+if version >= 702
+  Plugin 'vim-airline/vim-airline'
+  Plugin 'vim-airline/vim-airline-themes'
+endif
+Plugin 'airblade/vim-matchquote'
+"Bundle 'chase/vim-ansible-yaml'
+Plugin 'pearofducks/ansible-vim'
+
+"http://jmatthews.us/blog/2013/03/10/managing-vim-python-plugins/
+let s:python_ver = 0
+silent! python import sys, vim;
+\ vim.command("let s:python_ver="+"".join(map(str,sys.version_info[0:3])))
+
+" Python plugin bundles
+if (has('python') || has('python3')) && s:python_ver >= 260
+  Plugin 'mbadran/headlights'
+"  Bundle 'SirVer/ultisnips'
+endif
+
+"All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList          - list configured plugins
+" :PluginInstall(!)    - install (update) plugins
+" :PluginSearch(!) foo - search (or refresh cache first) for foo
+" :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+" Set color scheme (mine is a slight variation of default)
+"colorscheme mine
+" Enable coloring for dark background terminals.
+set background=dark
+let g:solarized_termtrans=1
+let g:solarized_termcolors=256
+let g:solarized_contrast="high"
+let g:solarized_visibility="high"
+" colorscheme solarized
+" Enable syntax highlighting and coloring.
+syntax enable
+match ErrorMsg '\s\+$'
+"set runtimepath^=~/.vim/bundle/ctrlp.vim
+" Enable filetype detection, plugins, and indention.
+"ifiletype plugin indent on
+" Source filetype plugins.
+" The ! indicates sourcing all vs just the 1st found.
+runtime! ftdetect/*.vim
+" Set grep to always display the filename.
+set grepprg=grep\ -nH\ $*
+" On win32, use shellslash
+set shellslash
+" Begin searching while typing.
+set incsearch
+" Ignore case while searching.
+set ignorecase
+" Use intelligent case while searching.
+" If search string contains an upper case letter, disable ignorecase.
+set smartcase
+
+" Use indent from current line when starting a new one.
+"set autoindent
+" Use smart indenting when starting a new line.
+"set smartindent
+" Don't use c style indenting.
+"set nocindent
+
+" Highlight search results in buffer.
+set hlsearch
+" Expand tabs to spaces.
+set expandtab
+" Number of spaces that a tab counts for.
+set tabstop=4
+" Number of spaces to use for each step of indent.
+set shiftwidth=4
+" Insert spaces for tabs according to shiftwidth.
+set smarttab
+" Allow backspace over ...
+set backspace=indent,eol,start
+" Strings to use in list mode.
+set listchars=tab:>-,extends:>,precedes:<,trail:-,nbsp:%,eol:$
+" Break lines at the nearest word boundary.
+set linebreak
+" Enable line wrapping.
+set wrap
+" When closing a block, show the matching bracket.
+set showmatch
+" Include angle brackets in matching.
+set matchpairs+=<:>
+" Do not redraw the screen while macros are running.
+"set lazyredraw
+" Backup files.
+set backup
+" ... and back them up here (1st one that exists, wins).
+" if you want your backups to be neatly grouped, just create a directory
+" called '.backup' in your working directory. Vim will stash backups there.
+" The 'directory' option controls where swap files go. If your working
+" directory is not writable, Vim will put the swap file in one of the
+" specified places.
+set backupdir=~/.vim/backup
+set directory=~/.vim/backup
+" Save files before performing certain actions.
+set autowrite
+" Show current mode in the status line.
+set showmode
+" Show the command in the status line.
+set showcmd
+" Start scrolling at this number of lines from the bottom.
+set scrolloff=2
+" Start scrolling horizontally at this number of columns.
+set sidescrolloff=5
+" Status line takes up this many lines.
+" Make the status line always visible.
+set laststatus=2
+" Always show the ruler.
+set ruler
+" Indicates a fast terminal connection.
+set ttyfast
+" Enables wildmenu tab completion.
+set wildmenu
+" Type of wildmenu.
+set wildmode=longest:full,list:full
+" Massively detailed viminfo file.
+set viminfo='500,f1,:100,/100
+" Look for embedded modelines at the top of the file.
+set modeline
+" Only look at this number of lines for modeline
+set modelines=10
+" Try to detect file formats.
+" Unix for new files and autodetect for the rest.
+set fileformats=unix,dos,mac
+" Command history size.
+set history=50
+" Disable the splash screen (and some various tweaks for messages).
+set shortmess=aTItoO
+" Enable the mouse.
+" set mouse=a
+" Hide the mouse while typing.
+set mousehide
+" Enable the popup menu.
+set mousem=popup
+" Split vertically to the right.
+set splitright
+" Split horizontally below.
+set splitbelow
+" Status line definition.
+set statusline=[%n]\ %{fugitive#statusline()}\ %<%f%m%r\ %w\ %y\ \ <%{&fileformat}>%=[%o]\ %l,%c%V\/%L\ \ %P
+" Set folding method.
+" =marker means to use an embedded tag to define the fold boundaries.
+set foldmethod=marker
+" Disable the beeping.
+set noerrorbells
+" Set the terminal window title.
+set title
+" Set the pager
+set more
+
+"""""""""""""""""""
+" airline
+""""""""""""""""""""
+" if !exists('g:airline_symbols')
+"      let g:airline_symbols = {}
+"  endif
+" let g:airline_symbols.space = "\ua0"
+
+" Enable the list of buffers
+" Setting the below to true broke the symbols
+"let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 0
+" let g:airline#extensions#tabline#enabled = 1
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline_theme             = 'powerlineish'
+let g:airline_enable_branch     = 1
+let g:airline_enable_syntastic  = 1
+
+" vim-powerline symbols
+"""""""""""""""""""""""
+"let g:airline_left_sep          = '⮀'
+"let g:airline_left_alt_sep      = '⮁'
+"let g:airline_right_sep         = '⮂'
+"let g:airline_right_alt_sep     = '⮃'
+"let g:airline_branch_prefix     = '⭠'
+"let g:airline_readonly_symbol   = '⭤'
+"let g:airline_linecolumn_prefix = '⭡'
+
+" Mappings
+let g:mapleader=","
+
+" Comma is useful for navigation, map it to space instead.
+" space as mapleader
+" let g:mapleader = "\<space>"
+
+nnoremap <F5> :buffers<CR>:buffer<Space>
+
+" Remove trailing whitespace
+nnoremap <Leader>rtw :%s/\s\+$//e<CR>
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+"Mappings
+"This appears to be the left Alt key held down, or the
+"Esc character allowing one go.
+"To create the Esc character, type a literal Ctrl-V then Esc
+"http://stackoverflow.com/questions/16599867/vim-can-i-have-the-last-key-of-a-multi-key-binding-repeat-the-command
+nnoremap j <C-w>-
+nnoremap k <C-w>+
+nnoremap h <C-w><
+nnoremap l <C-w>>
+
+" Maps Alt-[s.v] to horizontal and vertical split respectively
+noremap <silent> s :new<CR>
+noremap <silent> v :vnew<CR>
+
+" Maps Alt-[n,p] for moving next and previous window respectively
+noremap <silent> n <C-w><C-w>
+noremap <silent> p <C-w><S-w>
+noremap <silent> <left> <C-w><left>
+noremap <silent> <right> <C-w><right>
+noremap <silent> <up> <C-w><up>
+noremap <silent> <down> <C-w><down>
+
+" fugitive git bindings
+"http://www.reddit.com/r/vim/comments/21f4gm/best_workflow_when_using_fugitive/
+nnoremap <leader>ga :Git add %:p<CR><CR>
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gc :Gcommit -v -q<CR>
+nnoremap <leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>ge :Gedit<CR>
+nnoremap <leader>gr :Gread<CR>
+nnoremap <leader>gw :Gwrite<CR><CR>
+nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <leader>gp :Ggrep<Space>
+nnoremap <leader>gm :Gmove<Space>
+nnoremap <leader>gb :Git branch<Space>
+nnoremap <leader>go :Git checkout<Space>
+nnoremap <leader>gps :Dispatch! git push<CR>
+nnoremap <leader>gpl :Dispatch! git pull<CR>
+
+" NERDTree
+map <C-n>t :NERDTreeToggle<CR>
+
+" MinibuffExplorer
+map <C-m>bo :MBEOpen<cr>
+map <C-m>bc :MBEClose<cr>
+map <C-m>bt :MBEToggle<cr>
+
+"Buffer movement mapping
+map <F2> :bprevious<CR>
+map <F3> :bnext<CR>
+
+let g:miniBufExplBRSplit = 0
+let g:miniBufExplVSplit = 20
+
+map <space> viw
+
+" Toggle paste
+
+nnoremap <F4> :set invpaste paste?<CR>|i
+set pastetoggle=<F4>
+set showmode
